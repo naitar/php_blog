@@ -1,5 +1,17 @@
+<?php
+session_start();
+require '../Config/config.php';
+
+if (empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
+    header('location:login.php');
+}
+
+?>
+
 <!DOCTYPE html>
 <html>
+
+
 
 <head>
     <meta charset="utf-8">
@@ -31,94 +43,45 @@
             </div>
         </section>
 
-        <section class="content">          
-                            
-                <div class="row">
-                    <!-- blogbox -->
-                    <div class="col-md-4">                      
-                            <div class="card card-widget">
-                                <div class="card-header">
-                                    <div style="text-align: center;float:none;">
-                                        <h4>BLog Title</h4>
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <img class="img-fluid pad" src="../dist/img/photo2.png" alt="Photo">
-                                </div>
-                            </div>                     
-                    </div>
+        <section class="content">
 
-                    <!-- blogbox -->
-                    <div class="col-md-4">                      
-                            <div class="card card-widget">
-                                <div class="card-header">
-                                    <div style="text-align: center;float:none;">
-                                        <h4>BLog Title</h4>
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <img class="img-fluid pad" src="../dist/img/photo2.png" alt="Photo">
-                                </div>
-                            </div>                     
-                    </div>
+            <div class="row">
+<?php
 
-                    <!-- blogbox -->
-                    <div class="col-md-4">                      
-                            <div class="card card-widget">
-                                <div class="card-header">
-                                    <div style="text-align: center;float:none;">
-                                        <h4>BLog Title</h4>
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <img class="img-fluid pad" src="../dist/img/photo2.png" alt="Photo">
-                                </div>
-                            </div>                     
-                    </div>
+    $stmt = $pdo->prepare("SELECT * FROM posts ORDER BY id DESC");
+    $stmt->execute();
+    $result = $stmt->fetchAll();
+    // var_dump($result);
 
-                    <!-- blogbox -->
-                    <div class="col-md-4">                      
-                            <div class="card card-widget">
-                                <div class="card-header">
-                                    <div style="text-align: center;float:none;">
-                                        <h4>BLog Title</h4>
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <img class="img-fluid pad" src="../dist/img/photo2.png" alt="Photo">
-                                </div>
-                            </div>                     
-                    </div>
+if ($result) {
 
-                    <!-- blogbox -->
-                    <div class="col-md-4">                      
-                            <div class="card card-widget">
-                                <div class="card-header">
-                                    <div style="text-align: center;float:none;">
-                                        <h4>BLog Title</h4>
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <img class="img-fluid pad" src="../dist/img/photo2.png" alt="Photo">
-                                </div>
-                            </div>                     
-                    </div>
-
-                    <!-- blogbox -->
-                    <div class="col-md-4">                      
-                            <div class="card card-widget">
-                                <div class="card-header">
-                                    <div style="text-align: center;float:none;">
-                                        <h4>BLog Title</h4>
-                                    </div>
-                                </div>
-                                <div class="card-body">
-                                    <img class="img-fluid pad" src="../dist/img/photo2.png" alt="Photo">
-                                </div>
-                            </div>                     
+  foreach ($result as $value) {
+?>
+                <!-- blogbox -->
+                <div class="col-md-4">
+                    <div class="card card-widget">
+                        <div class="card-header">
+                            <div style="text-align: center;float:none;">
+                                <h4><?php echo  $value['title'];?></h4>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <a href="blogdetail.php?id=<?php echo $value['id'] ?>">
+                            <img class="img-fluid pad" src="../admin/images/<?php echo $value['image']; ?>" alt="Blog Photo" 
+                                style="height: 200px !important;" >
+                            </a>
+                           
+                        </div>
                     </div>
                 </div>
-         
+
+<?php 
+  }
+}
+
+?>
+            </div>
+
 
 
 
@@ -126,13 +89,17 @@
 
         </section>
 
+        <a id="back-to-top" href="#" class="btn btn-primary back-to-top" role="button" aria-label="Scroll to top">
+          <i class="fas fa-chevron-up"></i>
+        </a>
+
         <footer class="main-footer" style="margin-left:0px !important;">
             <div class="float-right ">
-              <b>Version</b> 4
+                <b>Version</b> 4
             </div>
             <strong>Copyright &copy; 2020-2021 <a href="#">Blog </a>.</strong> All rights
             reserved.
-          </footer>
+        </footer>
 
     </div>
 

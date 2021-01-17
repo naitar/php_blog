@@ -15,7 +15,7 @@ if ($_POST) {
     $id = $_POST['id'];
     $title = $_POST['title'];
     $content = $_POST['content'];
-    var_dump($_FILES);
+    // var_dump($_FILES);
     if ($_FILES['image']['name'] != null) {
         $file = 'images/' . ($_FILES['image']['name']);
         $imageType = pathinfo($file, PATHINFO_EXTENSION);
