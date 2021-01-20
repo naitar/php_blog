@@ -26,15 +26,33 @@ if ($_POST) {
 
 $stmt1 = $pdo->prepare("SELECT * FROM comments WHERE post_id=$blog_id ORDER BY id");
 $stmt1->execute();
-$cm_result = $stmt1->fetchAll();
+$cm_result = $stmt1->fetchAll(PDO::FETCH_ASSOC);
 
-if($cm_result){
-    $author_id = $cm_result[0]['author_id'];
+// echo "<pre>";
+// print_r($cm_result);
 
-    $stmtau = $pdo->prepare("SELECT * FROM users WHERE id=$author_id");
-    $stmtau->execute();
-    $au_result = $stmtau->fetchAll();
+// echo "............................................";
+
+
+$au_result=[];
+if ($cm_result) {
+    foreach($cm_result as $key => $value){
+
+        $author_id = $cm_result[$key]['author_id'];
+        $stmtau = $pdo->prepare("SELECT * FROM users WHERE id=$author_id");
+        $stmtau->execute();
+        $au_result[] = $stmtau->fetchAll(PDO::FETCH_ASSOC);
+;    
+    }
+
 }
+
+// foreach($au_result as $au_value ){
+//     echo $au_value[0]['name']."     ".$cm_result[0]['content'].
+//     "<br>";
+// }
+
+
 
 
 ?>
@@ -66,6 +84,10 @@ if($cm_result){
                     <div class="col-md-12" style="text-align:center">
                         <h3>Blog SITE</h3>
                     </div>
+                    <div class="logout float-right" style="  position: absolute;right: 0px;">
+                    <a href="index.php" class="btn btn-default"><i class="fa fa-home">HOME</i></a>    
+                    <a href="logout.php" class="btn btn-default">LOGOUT</a>
+                    </div>
 
                 </div>
             </div>
@@ -93,42 +115,36 @@ if($cm_result){
                         <!-- /.card-body -->
                         <div class="card-footer card-comments">
                             <div>
-                                <a href="index.php" class="btn btn-default"> 	««Go Back</a>
+                                <a href="index.php" class="btn btn-default"> ««Go Back</a>
                                 <h3>Comment</h3>
                                 <hr>
                             </div>
 
-                          <?php if ($cm_result) {
-                                foreach ($cm_result as $value) {
-                            ?>
-                                    <div class="card-comment">
-                                        <div class="comment-text" style="margin-left:0px !important;">
-                                            <span class="username">
-                                                <?php echo $au_result[0]['name']; ?>
-                                                <span class="text-muted float-right"><?php echo $cm_result[0]['created_id']; ?></span>
-                                            </span><!-- /.username -->
-                                            <?php echo $cm_result[0]['content']; ?>
-                                        </div>
-                                        <!-- /.comment-text -->
+                            <?php if ($cm_result) {
+                            foreach ($cm_result as $key =>  $value) {
+                        ?>
+                                <div class="card-comment">
+                                    <div class="comment-text" style="margin-left:0px !important;">
+                                        <span class="username">
+                                            <?php echo $au_result[$key][0]['name']; ?>
+                                            <span class="text-muted float-right"><?php echo $value['created_id']; ?></span>
+                                        </span><!-- /.username -->
+                                        <?php echo $value['content']; ?>
                                     </div>
+                                    <!-- /.comment-text -->
+                                </div>
 
-                            <?php
-
-                                }
+                        <?php
                             }
+                        }
+                        ?>
 
-                            ?>
-
-
-                            <!-- /.card-comment -->
-
-
+                        <!-- /.card-comment -->
                         </div>
                         <!-- /.card-footer -->
                         <div class="card-footer">
                             <form action="" method="post">
                                 <!-- <img class="img-fluid img-circle img-sm" src="../dist/img/user4-128x128.jpg" alt="Alt Text"> -->
-
                                 <div class="img-push">
                                     <input type="text" name="comment" class="form-control form-control-sm" placeholder="Press enter to post comment">
                                 </div>
@@ -137,17 +153,13 @@ if($cm_result){
                         <!-- /.card-footer -->
                     </div>
                     <!-- /.card -->
-
-
                     <!-- /.col -->
                 </div>
-
         </section>
 
         <a id="back-to-top" href="#" class="btn btn-primary back-to-top" role="button" aria-label="Scroll to top">
-          <i class="fas fa-chevron-up"></i>
+            <i class="fas fa-chevron-up"></i>
         </a>
-
 
         <footer class="main-footer" style="margin-left:0px !important;">
             <div class="float-right ">
@@ -156,10 +168,7 @@ if($cm_result){
             <strong>Copyright &copy; 2020-2021 <a href="#">Blog </a>.</strong> All rights
             reserved.
         </footer>
-
-
     </div>
-
 
     <!-- jQuery -->
     <script src="../plugins/jquery/jquery.min.js"></script>
@@ -171,5 +180,4 @@ if($cm_result){
     <script src="../dist/js/demo.js"></script>
 
 </body>
-
 </html>

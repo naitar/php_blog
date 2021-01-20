@@ -6,8 +6,6 @@
         $name = $_POST['name'];
         $email = $_POST['email'];
         $password = $_POST['password'];
-
-        echo $name.$email.$password;
     
         $stmt = $pdo -> prepare("SELECT * FROM users where email=:email");
         $stmt -> bindValue(':email',$email);

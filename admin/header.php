@@ -29,8 +29,14 @@
 
       </ul>
 
+      <?php
+      $link = $_SERVER['PHP_SELF'];
+      $link_array = explode('/',$link);
+      $page = end($link_array);
+      ?>
+
       <!-- SEARCH FORM -->
-      <form class="form-inline ml-3" method="POST" action="index.php"> 
+      <form class="form-inline ml-3" method="POST" action="<?php	echo $page == 'index.php' ? 'index.php' : 'userlist.php';	?>" > 
         <div class="input-group input-group-sm">
           <input name="search" class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
           <div class="input-group-append">
@@ -48,7 +54,7 @@
     <!-- Main Sidebar Container -->
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
       <!-- Brand Logo -->
-      <a href="index3.html" class="brand-link">
+      <a href="#" class="brand-link">
         <img src="../dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
         <span class="brand-text font-weight-light"> Blog Panel </span>
       </a>
@@ -72,12 +78,18 @@
                with font-awesome or any other icon font library -->
 
             <li class="nav-item">
-              <a href="#" class="nav-link">
+              <a href="index.php" class="nav-link">
                 <i class="nav-icon fas fa-th"></i>
                 <p>
                   Blog Admin
 
                 </p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="userlist.php" class="nav-link">
+                <i class="nav-icon fa fa-user"></i>
+                <p>Users</p>
               </a>
             </li>
           </ul>

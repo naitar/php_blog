@@ -1,12 +1,51 @@
 <?php
 session_start();
+
 require '../Config/config.php';
 
 if (empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
     header('location:login.php');
+  }
+
+
+
+if (!empty($_GET['pageno'])) {
+
+    $pageno = $_GET['pageno'];
+} else {
+    $pageno = 1;
 }
 
+$numOfrecs  = 6;
+$offset = ($pageno - 1) * $numOfrecs;
+
+if (empty($_POST['search'])) {
+    $stmt = $pdo->prepare("SELECT * FROM posts ORDER BY id DESC");
+    $stmt->execute();
+    $rawResult = $stmt->fetchAll();
+
+    $total_pages = ceil(count($rawResult) / $numOfrecs);
+
+    $stmt = $pdo->prepare("SELECT * FROM posts ORDER BY id DESC LIMIT $offset,$numOfrecs ");
+    $stmt->execute();
+    $result = $stmt->fetchAll();
+} else {
+    $searchkey = $_POST['search'];
+    $stmt = $pdo->prepare("SELECT * FROM posts WHERE title LIKE '%$searchkey%' ORDER BY id DESC");
+    $stmt->execute();
+    $rawResult = $stmt->fetchAll();
+
+    $total_pages = ceil(count($rawResult) / $numOfrecs);
+
+    $stmt = $pdo->prepare("SELECT * FROM posts WHERE title LIKE '%$searchkey%' ORDER BY id DESC LIMIT $offset,$numOfrecs ");
+    $stmt->execute();
+    $result = $stmt->fetchAll();
+}
+
+
 ?>
+
+
 
 <!DOCTYPE html>
 <html>
@@ -33,10 +72,14 @@ if (empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
     <div class="container">
         <section class="content-header">
 
-            <div class="container-fluid ">
+            <div class="container-n  ">
                 <div class="row mb-3">
                     <div class="col-md-12" style="text-align:center">
                         <h3>Blog SITE</h3>
+                    </div>
+                    <div class="logout float-right" style="  position: absolute;right: 0px;">
+                    <a href="index.php" class="btn btn-default"><i class="fa fa-home">HOME</i></a>    
+                    <a href="logout.php" class="btn btn-default">LOGOUT</a>
                     </div>
 
                 </div>
@@ -46,52 +89,73 @@ if (empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
         <section class="content">
 
             <div class="row">
-<?php
+                <?php
+                if ($result) {
+                    $i = 1;
+                    foreach ($result as $value) {
+                ?>
+                        <!-- blogbox -->
+                        <div class="col-md-4">
+                            <div class="card card-widget">
+                                <div class="card-header">
+                                    <div style="text-align: center;float:none;">
+                                        <h4><?php echo  $value['title']; ?></h4>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <a href="blogdetail.php?id=<?php echo $value['id'] ?>">
+                                        <img class="img-fluid pad" src="../admin/images/<?php echo $value['image']; ?>" alt="Blog Photo" style="height: 200px !important;">
+                                    </a>
 
-    $stmt = $pdo->prepare("SELECT * FROM posts ORDER BY id DESC");
-    $stmt->execute();
-    $result = $stmt->fetchAll();
-    // var_dump($result);
-
-if ($result) {
-
-  foreach ($result as $value) {
-?>
-                <!-- blogbox -->
-                <div class="col-md-4">
-                    <div class="card card-widget">
-                        <div class="card-header">
-                            <div style="text-align: center;float:none;">
-                                <h4><?php echo  $value['title'];?></h4>
+                                </div>
                             </div>
                         </div>
-                        <div class="card-body">
-                            <a href="blogdetail.php?id=<?php echo $value['id'] ?>">
-                            <img class="img-fluid pad" src="../admin/images/<?php echo $value['image']; ?>" alt="Blog Photo" 
-                                style="height: 200px !important;" >
-                            </a>
-                           
-                        </div>
-                    </div>
-                </div>
 
-<?php 
-  }
-}
+                <?php
+                    }
+                }
 
-?>
+                ?>
             </div>
-
-
-
-
-
 
         </section>
 
         <a id="back-to-top" href="#" class="btn btn-primary back-to-top" role="button" aria-label="Scroll to top">
-          <i class="fas fa-chevron-up"></i>
+            <i class="fas fa-chevron-up"></i>
         </a>
+
+        <div class="card-footer clearfix">
+            <ul class="pagination" style="float:right;">
+                <li class="page-item">
+                    <a class="page-link" href="?pageno=1">First</a>
+                </li>
+                <li class="page-item  <?php if ($pageno <= 1) {
+                                            echo 'disabled';
+                                        } ?>">
+                    <a class="page-link" href="<?php if ($pageno <= 1) {
+                                                    echo '#';
+                                                } else {
+                                                    echo "?pageno=" . ($pageno - 1);
+                                                } ?>">Previous</a>
+                </li>
+                <li class="page-item disabled">
+                    <a class="page-link" href="#"><?php echo $pageno; ?> </a>
+                </li>
+                <li class="page-item <?php if ($pageno >= $total_pages) {
+                                            echo 'disabled';
+                                        } ?> ">
+                    <a class="page-link" href="<?php if ($pageno >= $total_pages) {
+                                                    echo '#';
+                                                } else {
+                                                    echo "?pageno=" . ($pageno + 1);
+                                                } ?>">Next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?pageno=<?php echo $total_pages ?>">Last</a>
+                </li>
+            </ul>
+        </div>
+
 
         <footer class="main-footer" style="margin-left:0px !important;">
             <div class="float-right ">
@@ -102,10 +166,6 @@ if ($result) {
         </footer>
 
     </div>
-
-
-
-
 
     <!-- jQuery -->
     <script src="../plugins/jquery/jquery.min.js"></script>

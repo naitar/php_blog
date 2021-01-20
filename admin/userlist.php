@@ -13,7 +13,6 @@ if(isset($_SESSION['role'])){
 }
 
 include('header.php');
-
 if (!empty($_GET['pageno'])) {
 
   $pageno = $_GET['pageno'];
@@ -21,28 +20,28 @@ if (!empty($_GET['pageno'])) {
   $pageno = 1;
 }
 
-$numOfrecs  = 3;
+$numOfrecs  =10;
 $offset = ($pageno - 1) * $numOfrecs;
 
 if (empty($_POST['search'])) {
-  $stmt = $pdo->prepare("SELECT * FROM posts ORDER BY id DESC");
+  $stmt = $pdo->prepare("SELECT * FROM users ORDER BY id DESC");
   $stmt->execute();
   $rawResult = $stmt->fetchAll();
 
   $total_pages = ceil(count($rawResult) / $numOfrecs);
 
-  $stmt = $pdo->prepare("SELECT * FROM posts ORDER BY id DESC LIMIT $offset,$numOfrecs ");
+  $stmt = $pdo->prepare("SELECT * FROM users ORDER BY id DESC LIMIT $offset,$numOfrecs ");
   $stmt->execute();
   $result = $stmt->fetchAll();
 } else {
   $searchkey = $_POST['search'];
-  $stmt = $pdo->prepare("SELECT * FROM posts WHERE title LIKE '%$searchkey%' ORDER BY id DESC");
+  $stmt = $pdo->prepare("SELECT * FROM users WHERE name LIKE '%$searchkey%' ORDER BY id DESC");
   $stmt->execute();
   $rawResult = $stmt->fetchAll();
 
   $total_pages = ceil(count($rawResult) / $numOfrecs);
 
-  $stmt = $pdo->prepare("SELECT * FROM posts WHERE title LIKE '%$searchkey%' ORDER BY id DESC LIMIT $offset,$numOfrecs ");
+  $stmt = $pdo->prepare("SELECT * FROM users WHERE name LIKE '%$searchkey%' ORDER BY id DESC LIMIT $offset,$numOfrecs ");
   $stmt->execute();
   $result = $stmt->fetchAll();
 }
@@ -53,6 +52,8 @@ if (empty($_POST['search'])) {
 <!-- Main content -->
 <div class="content">
   <div class="container-fluid">
+
+  
     <!-- table -->
     <div class="card">
       <div class="card-header">
@@ -62,14 +63,16 @@ if (empty($_POST['search'])) {
 
       <!-- /.card-header -->
       <div class="card-body">
-        <a href="add.php" class="btn btn-success">New Blog</a><br /><br />
+        <a href="user_add.php" class="btn btn-success">New User</a><br /><br />
 
         <table class="table table-bordered">
           <thead>
             <tr>
               <th style="width: 10px">ID</th>
-              <th style="width: 250px">Title</th>
-              <th>Content</th>
+              <th style="width: 250px">Name</th>
+              <th>Email</th>
+              <th>Password</th>
+              <th>Role</th>
               <th style="width: 150px">Action</th>
             </tr>
           </thead>
@@ -82,12 +85,17 @@ if (empty($_POST['search'])) {
             ?>
                 <tr>
                   <td><?php echo $i; ?></td>
-                  <td><?php echo $value['title']; ?></td>
-                  <td style="height: 20px;"><?php echo $value['content']; ?></td>
+                  <td><?php echo $value['name']; ?></td>
+                  <td><?php echo $value['email']; ?></td>
+                  <td><?php echo $value['password']; ?></td>
+                  <td><?php if($value['role'] == 1 ){ echo "Admin";} else {echo "User"; } ?></td>
+
                   <td>
                     <div class="btn-group">
-                      <div class="container"> <a href="edit.php?id=<?php echo $value['id'];  ?>" class="btn btn-primary">Edit</a> </div>
-                      <div class="container"> <a href="delete.php?id=<?php echo $value['id'];  ?>" onclick="return confirm('Are you sure you want to delete this item')" class="btn btn-danger">Delete</a></div>
+                      <div class="container"> <a href="user_edit.php?id=<?php echo $value['id'];  ?>" class="btn btn-primary">Edit</a> </div>
+                      <div class="container"> <a href="user_delete.php?id=<?php echo $value['id'];  ?>" 
+                      onclick="return confirm('Are you sure you want to delete this item')"
+                      class="btn btn-danger">Delete</a></div>
                     </div>
                   </td>
                 </tr>
@@ -137,7 +145,7 @@ if (empty($_POST['search'])) {
     <!-- /.card -->
     <!-- table -->
 
-  </div>>
+  </div>
 </div>
 
 </div>

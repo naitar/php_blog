@@ -7,7 +7,7 @@ if (empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
 }
 
 ?>
-<?php include('header.html'); ?>
+<?php include('header.php'); ?>
 <!-- Header -->
 
 <?php
