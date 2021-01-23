@@ -15,17 +15,13 @@
       }else{
         $email = $_POST['email'];
           $password = $_POST['password'];
-
-        
-        
           $stmt = $pdo -> prepare("SELECT * FROM users where email=:email");
           $stmt -> bindValue(':email',$email);
           $stmt -> execute();
           $user = $stmt -> fetch(PDO::FETCH_ASSOC);
 
            if($user){
-            if($user['password']==$password){
-            
+             if(password_verify($password, $user['password'])) {            
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['name'] = $user['name'];
                 $_SESSION['role'] = $user['role'];
