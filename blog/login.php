@@ -5,33 +5,39 @@
     
 
     if($_POST){
-        $email = $_POST['email'];
-        $password = $_POST['password'];
-
-        
-        
-        $stmt = $pdo -> prepare("SELECT * FROM users where email=:email");
-        $stmt -> bindValue(':email',$email);
-        $stmt -> execute();
-        $user = $stmt -> fetch(PDO::FETCH_ASSOC);
-
-         if($user){
-          if($user['password']==$password){
-            
-              $_SESSION['user_id'] = $user['id'];
-              $_SESSION['name'] = $user['name'];
-              $_SESSION['role'] = $user['role'];
-              $_SESSION['logged_in'] = time();
-            
-              header('location:index.php');
-          }
-        
-      }
-      echo "<script>alert('Incorrect email & password')</script>";
-            
+      if(empty($_POST['email']) || empty($_POST['password']) ){
+        if(empty($_POST['email'])){
+            $emailError = 'Email  is required';
         }
+        if(empty($_POST['password'])){
+            $passwordError = 'Password  is required';
+        }
+      }else{
+        $email = $_POST['email'];
+          $password = $_POST['password'];
+
         
-    
+        
+          $stmt = $pdo -> prepare("SELECT * FROM users where email=:email");
+          $stmt -> bindValue(':email',$email);
+          $stmt -> execute();
+          $user = $stmt -> fetch(PDO::FETCH_ASSOC);
+
+           if($user){
+            if($user['password']==$password){
+            
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['name'] = $user['name'];
+                $_SESSION['role'] = $user['role'];
+                $_SESSION['logged_in'] = time();
+            
+                header('location:index.php');
+            }
+        
+        }
+        echo "<script>alert('Incorrect email & password')</script>";
+      } 
+    }   
 ?>
 <!DOCTYPE html>
 <html>
@@ -56,7 +62,7 @@
 <body class="hold-transition login-page">
 <div class="login-box">
   <div class="login-logo">
-    <a href="../../index2.html"><b>Blog</b></a>
+    <a href="#"><b>Blog</b></a>
   </div>
   <!-- /.login-logo -->
   <div class="card">
@@ -64,7 +70,8 @@
       <p class="login-box-msg">Sign in to start your blog</p>
 
       <form action="login.php" method="post">
-        <div class="input-group mb-3">
+      <p style="color:red;"><?php echo empty($emailError) ? '' : '*'.$emailError ?></p>
+        <div class="input-group mb-3">        
           <input type="email" class="form-control" placeholder="Email" name=email>
           <div class="input-group-append">
             <div class="input-group-text">
@@ -72,7 +79,8 @@
             </div>
           </div>
         </div>
-        <div class="input-group mb-3">
+        <p style="color:red;"><?php echo empty($passwordError) ? '' : '*'.$passwordError ?></p>
+        <div class="input-group mb-3">        
           <input type="password" class="form-control" placeholder="Password" name=password>
           <div class="input-group-append">
             <div class="input-group-text">

@@ -6,52 +6,58 @@ if (empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
     header('location:login.php');
 }
 
-?>
-<?php include('header.php'); ?>
-<!-- Header -->
+include('header.php'); 
 
-<?php
-if($_POST){
-    // $file = 'images/'.($_FILES['image']['name']);
-    // $imageType = pathinfo($file,PATHINFO_EXTENSION);
-
-
-    // if($imageType != 'png' && $imageType != 'jpg' && $imageType != 'jpeg'  ){
-    //     echo "<script> alert('Image must be png,jpg,jpedg')</script>";
-    // }else{
-    //     move_uploaded_file($_FILES['image']['tmp_name'],$file);
-    //     $image = $_FILES['image']['name'];
-
-        $name = $_POST['name'];
-        $email = $_POST['email'];
-        $password = $_POST['password'];
-
+    if($_POST){
         
-        if(empty($_POST['role'])){
-          $role = 1;
-        }else{
-          $role = 0;
-        }
+        if(empty($_POST['name']) || empty($_POST['email']) || empty($_POST['password']) || strlen($_POST['password']) < 4) {
+            if(empty($_POST['name'])){
+                $nameError = 'Name  is required';
+            }
+            if(empty($_POST['email'])){
+                $emailError = 'Email  is required';
+            }
 
-        $stmt = $pdo -> prepare("SELECT * FROM users where email=:email");
-        $stmt -> bindValue(':email',$email);
-        $stmt -> execute();
-        $user = $stmt -> fetch(PDO::FETCH_ASSOC);
+            if(strlen($_POST['password']) < 4 ){
+                $passwordError = 'Password should be 4 charater at least';
+            }
+
+            if(empty($_POST['password'])){
+                $passwordError = 'Password  is required';
+            }
+
+        }else{
+            $name = $_POST['name'];
+            $email = $_POST['email'];
+            $password = $_POST['password'];
+            
+            if(empty($_POST['role'])){
+            $role = 0;
+            }else{
+            $role = 1;
+            }
+
+            $stmt = $pdo -> prepare("SELECT * FROM users where email=:email");
+            $stmt -> bindValue(':email',$email);
+            $stmt -> execute();
+            $user = $stmt -> fetch(PDO::FETCH_ASSOC);
+            
+            if($user){
+            echo "<script>alert('Email Duplicated')</script>";
+            
+            }else{
+            $stmt =  $pdo -> prepare("INSERT INTO users (name,email,password,role) VALUES (:name,:email,:password,:role)");
+            $result =  $stmt-> execute(
+                array(':name'=>$name,':email'=>$email,':password'=> $password,':role' => $role)
+            );
+            if($result){
+                echo  "<script>alert('Successfully added new user');window.location.href='userlist.php'</script>";
+            }
+
+            }
+
+        }        
         
-        if($user){
-          echo "<script>alert('Email Duplicated')</script>";
-          
-        }else{
-          $stmt =  $pdo -> prepare("INSERT INTO users (name,email,password,role) VALUES (:name,:email,:password,:role)");
-          $result =  $stmt-> execute(
-               array(':name'=>$name,':email'=>$email,':password'=> $password,':role' => $role)
-           );
-           if($result){
-               echo  "<script>alert('Successfully added new user');window.location.href='userlist.php'</script>";
-           }
-
-        }
-    
     }
 
 
@@ -70,29 +76,24 @@ if($_POST){
             <div class="card-body">
                 <form action="user_add.php" method="POST" enctype="multipart/form-data">
                     <div class="form-group">
-                        <label for="name" name="name"> Name</label>
-                        <input type="name" class="form-control" name="name" required>
+                        <label for="name" name="name"> Name</label><p style="color:red;display:inline;"><?php echo empty($nameError) ? '' : '*'.$nameError ?></p>
+                        <input type="name" class="form-control" name="name" >
                     </div>
 
                     <div class="form-group">
-                        <label for="email" name="email"> Email</label>
-                        <input type="email" class="form-control" name="email" required>
+                        <label for="email" name="email"> Email</label><p style="color:red;display:inline;"><?php echo empty($emailError) ? '' : '*'.$emailError ?></p>
+                        <input type="email" class="form-control" name="email" >
                     </div>
 
                     <div class="form-group">
-                        <label for="password" name="password"> Password </label>
-                        <input type="password" class="form-control" name="password" required>
+                        <label for="password" name="password"> Password </label><p style="color:red;display:inline;"><?php echo empty($passwordError) ? '' : '*'.$passwordError ?></p>
+                        <input type="password" class="form-control" name="password" >
                     </div>
 
                     <div class="form-group">
                         <label for="admin" name="password"> Admin &nbsp;&nbsp; </label>
                         <input type="checkbox" id="admin" name="admin" value="1">
                     </div>
-                  
-                    <!-- <div class="form-group">
-                        <label for="image" name="image"> Image</label><br>
-                        <input type="file" name="image" required>
-                    </div> -->
 
                     <div class="form-goup">
                         <input type="submit" value="submit" class="btn btn-success">

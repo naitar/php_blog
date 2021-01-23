@@ -12,38 +12,48 @@ if (empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
 
 <?php
 if ($_POST) {
-    $id = $_POST['id'];
-    $title = $_POST['title'];
-    $content = $_POST['content'];
-    // var_dump($_FILES);
-    if ($_FILES['image']['name'] != null) {
-        $file = 'images/' . ($_FILES['image']['name']);
-        $imageType = pathinfo($file, PATHINFO_EXTENSION);
-        // $imageType = $_FILES['image']['type'];
-        // var_dump($imageType);
+    if(empty($_POST['title']) || empty($_POST['content']) ){
+        if(empty($_POST['title'])){
+            $titleError = 'Title cannot be null';
+        }
+        if(empty($_POST['content'])){
+            $contentError = 'Content cannot be null';
+        }
+    }else{
+        $id = $_POST['id'];
+        $title = $_POST['title'];
+        $content = $_POST['content'];
+        // var_dump($_FILES);
+        if ($_FILES['image']['name'] != null) {
+            $file = 'images/' . ($_FILES['image']['name']);
+            $imageType = pathinfo($file, PATHINFO_EXTENSION);
+            // $imageType = $_FILES['image']['type'];
+            // var_dump($imageType);
 
-        if ($imageType != 'png' && $imageType != 'jpg' && $imageType != 'jpeg') {
-            echo "<script> alert('Image must be png,jpg,jpedg')</script>";
+            if ($imageType != 'png' && $imageType != 'jpg' && $imageType != 'jpeg') {
+                echo "<script> alert('Image must be png,jpg,jpedg')</script>";
+            } else {
+                move_uploaded_file($_FILES['image']['tmp_name'], $file);
+
+                $title = $_POST['title'];
+                $content = $_POST['content'];
+                $image = $_FILES['image']['name'];
+
+                $stmt =  $pdo->prepare("UPDATE posts SET title='$title',content='$content',image='$image' WHERE id=$id");
+                $result =  $stmt->execute();
+                if ($result) {
+                    echo  "<script>alert('Successfully updated!!!');window.location.href='index.php'</script>";
+                }
+            }
         } else {
-            move_uploaded_file($_FILES['image']['tmp_name'], $file);
-
-            $title = $_POST['title'];
-            $content = $_POST['content'];
-            $image = $_FILES['image']['name'];
-
-            $stmt =  $pdo->prepare("UPDATE posts SET title='$title',content='$content',image='$image' WHERE id=$id");
+            $stmt =  $pdo->prepare("UPDATE posts SET title='$title',content='$content' WHERE id=$id");
             $result =  $stmt->execute();
             if ($result) {
                 echo  "<script>alert('Successfully updated!!!');window.location.href='index.php'</script>";
             }
         }
-    } else {
-        $stmt =  $pdo->prepare("UPDATE posts SET title='$title',content='$content' WHERE id=$id");
-        $result =  $stmt->execute();
-        if ($result) {
-            echo  "<script>alert('Successfully updated!!!');window.location.href='index.php'</script>";
-        }
     }
+    
 }
 
 
@@ -66,15 +76,15 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
             <!-- /.card-header -->
             <div class="card-body">
-                <form action="edit.php" method="POST" enctype="multipart/form-data">
+                <form action="" method="POST" enctype="multipart/form-data">
                     <div class="form-group">
                         <input type="text" class="form-control" name="id" value="<?php echo $result['id'] ?>" hidden>
-                        <label for="title" name="title"> Title</label>
+                        <label for="title" name="title"> Title</label><p style="color:red;display:inline;"><?php echo empty($titleError) ? '' : '*'.$titleError ?></p>
                         <input type="text" class="form-control" name="title" value="<?php echo $result['title'] ?>" >
                     </div>
 
                     <div class="form-group">
-                        <label for="content" name="content"> Content</label><br>
+                        <label for="content" name="content"> Content</label><p style="color:red;display:inline;"><?php echo empty($contentError) ? '' : '*'.$contentError ?></p><br>
                         <textarea class="form-control" name="content" id="" cols="80" rows="8" require><?php echo $result['content'] ?> </textarea>
                     </div>
 

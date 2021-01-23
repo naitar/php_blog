@@ -1,36 +1,56 @@
 <?php
-    session_start();
-    require '../Config/config.php';  
+session_start();
+require '../Config/config.php';
 
-    if($_POST){
-        $name = $_POST['name'];
-        $email = $_POST['email'];
-        $password = $_POST['password'];
-    
-        $stmt = $pdo -> prepare("SELECT * FROM users where email=:email");
-        $stmt -> bindValue(':email',$email);
-        $stmt -> execute();
-        $user = $stmt -> fetch(PDO::FETCH_ASSOC);
-        
+if ($_POST) {
 
-        if($user){
-          echo "<script>alert('Email Duplicated')</script>";
-        
-        }else{
-          $stmt =  $pdo -> prepare("INSERT INTO users (name,email,password) VALUES (:name,:email,:password)");
-          $result =  $stmt-> execute(
-               array(':name'=>$name,':email'=>$email,':password' => $password)
-           );
-           if($result){
-               echo  "<script>alert('Successfully Register,you can now login');window.location.href='login.php'</script>";
-           }
-        }
-            
+  if(empty($_POST['name']) || empty($_POST['email']) || empty($_POST['password']) || strlen($_POST['password']) < 4) {
+    if(empty($_POST['name'])) {
+      $nameError = "Name is required";
     }
-    
+    if(empty($_POST['email'])) {
+      $emailError = "Email is required";
+    }
+    if(empty($_POST['password'])) {
+      $passwordError = "Password is required";
+    }
+    if(strlen($_POST['password']) < 4) {
+      $passwordMaxError = "Password must be at least 4 characters";
+    }
+  }else{
+
+    $name = $_POST['name'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    if (empty($_POST['role'])) {
+      $role = 0;
+    } else {
+      $role = 1;
+    }
+
+    $stmt = $pdo->prepare("SELECT * FROM users where email=:email");
+    $stmt->bindValue(':email', $email);
+    $stmt->execute();
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($user) {
+      echo "<script>alert('Email Duplicated')</script>";
+    } else {
+      $stmt =  $pdo->prepare("INSERT INTO users (name,email,password,role) VALUES (:name,:email,:password,:role)");
+      $result =  $stmt->execute(
+        array(':name' => $name, ':email' => $email, ':password' => $password, ':role' => $role)
+      );
+      if ($result) {
+        echo  "<script>alert('Successfully Register,you can now login');window.location.href='login.php'</script>";
+      }
+    }
+  }
+}
 ?>
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -49,77 +69,81 @@
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 </head>
+
 <body class="hold-transition login-page">
-<div class="login-box">
-  <div class="login-logo">
-    <a href="../../index.html"><b>Blog</b></a>
-  </div>
-  <!-- /.login-logo -->
-  <div class="card">
-    <div class="card-body login-card-body">
-      <p class="login-box-msg">Register New Account</p>
+  <div class="login-box">
+    <div class="login-logo">
+      <a href="#"><b>Blog</b></a>
+    </div>
+    <!-- /.login-logo -->
+    <div class="card">
+      <div class="card-body login-card-body">
+        <p class="login-box-msg">Register New Account</p>
 
-      <form action="register.php" method="post">
-
-      <div class="input-group mb-3">
-          <input type="name" class="form-control" placeholder="Name" name=name required>
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-user"></span>
+        <form action="" method="post">
+          <p style="color:red;"><?php echo empty($nameError) ? '' : '*' . $nameError ?></p>
+          <div class="input-group mb-3">
+            <input type="name" class="form-control" placeholder="Name" name=name>
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-user"></span>
+              </div>
             </div>
           </div>
-        </div>
-          
-        <div class="input-group mb-3">
-          <input type="email" class="form-control" placeholder="Email" name=email required>
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-envelope"></span>
+
+          <p style="color:red;"><?php echo empty($emailError) ? '' : '*' . $emailError ?></p>
+          <div class="input-group mb-3">
+            <input type="email" class="form-control" placeholder="Email" name=email>
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-envelope"></span>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="input-group mb-3">
-          <input type="password" class="form-control" placeholder="Password" name=password required>
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-lock"></span>
+          <p style="color:red;"><?php echo empty($passwordError) ? '' : '*' . $passwordError ?></p>
+          <div class="input-group mb-3">
+            <input type="password" class="form-control" placeholder="Password" name=password>
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-lock"></span>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="row">
-          
-          <!-- /.col -->
-          <div class="col-12">
-          <button type="submit" class="btn btn-primary btn-block">Register</button>    
-          <a href="login.php" class="btn btn-default btn-block">Back</a> 
+          <div class="row">
+
+            <!-- /.col -->
+            <div class="col-12">
+              <button type="submit" class="btn btn-primary btn-block">Register</button>
+              <a href="login.php" class="btn btn-default btn-block">Back</a>
+            </div>
+
+
+
+            <!-- /.col -->
           </div>
-          
-          
-          
-          <!-- /.col -->
-        </div>
-      </form>
+        </form>
 
 
-      <!-- /forgot -->
+        <!-- /forgot -->
 
-      <!-- <p class="mb-1">
+        <!-- <p class="mb-1">
         <a href="forgot-password.html">I forgot my password</a>
       </p>
       <p class="mb-0">
         <a href="register.html" class="text-center">Register a new membership</a>
       </p> -->
 
-   
-</div>
-<!-- /.login-box -->
 
-<!-- jQuery -->
-<script src="../plugins/jquery/jquery.min.js"></script>
-<!-- Bootstrap 4 -->
-<script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<!-- AdminLTE App -->
-<script src="../dist/js/adminlte.min.js"></script>
+      </div>
+      <!-- /.login-box -->
+
+      <!-- jQuery -->
+      <script src="../plugins/jquery/jquery.min.js"></script>
+      <!-- Bootstrap 4 -->
+      <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+      <!-- AdminLTE App -->
+      <script src="../dist/js/adminlte.min.js"></script>
 
 </body>
+
 </html>

@@ -11,13 +11,23 @@ if (empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
 <!-- Header -->
 
 <?php
+
 if($_POST){
     $file = 'images/'.($_FILES['image']['name']);
     $imageType = pathinfo($file,PATHINFO_EXTENSION);
     // $imageType = $_FILES['image']['type'];
-    // var_dump($imageType);
-
-    if($imageType != 'png' && $imageType != 'jpg' && $imageType != 'jpeg'  ){
+    // var_dump($_FILES['image']);
+    if(empty($_POST['title']) || empty($_POST['content']) || empty($_FILES['image']['name'])){
+        if(empty($_POST['title'])){
+            $titleError = 'Title cannot be null';
+        }
+        if(empty($_POST['content'])){
+            $contentError = 'Content cannot be null';
+        }
+        if(empty($_FILES['image']['name'])){
+            $imageError = 'Image cannot be null';
+        }
+    }elseif($imageType != 'png' && $imageType != 'jpg' && $imageType != 'jpeg'  ){
         echo "<script> alert('Image must be png,jpg,jpedg')</script>";
     }else{
         move_uploaded_file($_FILES['image']['tmp_name'],$file);
@@ -26,8 +36,7 @@ if($_POST){
         $content = $_POST['content'];
         $image = $_FILES['image']['name'];
 
-        
-        
+      
        $stmt =  $pdo -> prepare("INSERT INTO posts (title,content,author_id,image) VALUES (:title,:content,:author_id,:image)");
        $result =  $stmt-> execute(
             array(':title'=>$title,':content'=>$content,'author_id' => $_SESSION['user_id'],':image'=>$image)
@@ -53,18 +62,19 @@ if($_POST){
             <div class="card-body">
                 <form action="add.php" method="POST" enctype="multipart/form-data">
                     <div class="form-group">
-                        <label for="title" name="title"> Title</label>
-                        <input type="text" class="form-control" name="title" required>
+                        <label for="title" name="title"> Title</label><p style="color:red;display:inline;"><?php echo empty($titleError) ? '' : '*'.$titleError ?></p>
+                        <input type="text" class="form-control" name="title" >
                     </div>
 
                     <div class="form-group">
-                        <label for="content" name="content"> Content</label><br>
-                        <textarea class="form-control" name="content" id="" cols="80" rows="8" required></textarea>    
+                        <label for="content" name="content"> Content</label><p style="color:red;display:inline;"><?php echo empty($contentError) ? '' : '*'.$contentError ?></p><br>
+                        <textarea class="form-control" name="content" id="" cols="80" rows="8" ></textarea>    
                     </div>
 
                     <div class="form-group">
-                        <label for="image" name="image"> Image</label><br>
-                        <input type="file" name="image" required>
+                        <label for="image" name="image"> Image</label>
+                        <p style="color:red;display:inline;"><?php echo empty($imageError) ? '' : '*'.$imageError ?></p><br>
+                        <input type="file" name="image" >
                     </div>
 
                     <div class="form-goup">

@@ -13,35 +13,49 @@ if($_GET){
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
+if($_POST) {
+        if(empty($_POST['name']) || empty($_POST['email'])  ){
+            if(empty($_POST['name'])){
+                $nameError = 'Name  is required';
+            }
+            if(empty($_POST['email'])){
+                $emailError = 'Email  is required';
+            }
+    }elseif(!empty($_POST['password']) && strlen($_POST['password']) < 4 ){
+        $passwordError = 'Password should be 4 charater at least';
+    }else{
+        $id = $_POST['id'];
+        $name = $_POST['name'];
+        $email = $_POST['email'];
+        $password = $_POST['password'];
 
-if ($_POST) {
-    $id = $_POST['id'];
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-   
-    if(empty($_POST['role'])){
-        $role = 0;
-    }else{
-        $role = 1;
-    }
-    
-    $stmt2 = $pdo->prepare("SELECT * FROM users WHERE email=:email AND id != :id");
-    $stmt2->execute(array(':email'=>$email,':id'=>$id));
-    $stmt2_res = $stmt2->fetch(PDO::FETCH_ASSOC);
-        
-    if($stmt2_res){
-        echo "<script>alert('Email duplicated');</script>";
-        
-    }else{
-        $stmt3 =  $pdo->prepare("UPDATE users SET name='$name',email='$email',password='$password', role ='$role' WHERE id='$id'");
-        $result =  $stmt3->execute();
-        if ($result) {
-            echo  "<script>alert('Successfully updated!!!');window.location.href='userlist.php'</script>";
+        if(empty($_POST['role'])){
+            $role = 0;
+        }else{
+            $role = 1;
         }
-
-    }  
+    
+        $stmt2 = $pdo->prepare("SELECT * FROM users WHERE email=:email AND id != :id");
+        $stmt2->execute(array(':email'=>$email,':id'=>$id));
+        $stmt2_res = $stmt2->fetch(PDO::FETCH_ASSOC);
+        
+        if($stmt2_res){
+            echo "<script>alert('Email duplicated');</script>";        
+        }else{
+            if($password != null){
+                $stmt3 =  $pdo->prepare("UPDATE users SET name='$name',email='$email',password='$password', role ='$role' WHERE id='$id'");
+            }else{
+                $stmt3 =  $pdo->prepare("UPDATE users SET name='$name',email='$email', role ='$role' WHERE id='$id'");
+            }
+            $res_stmt3 =  $stmt3->execute();
+            if($res_stmt3){
+                echo  "<script>alert('Successfully updated!!!'); window.location.href='userlist.php'</script>";
+            }
+        }
+    }
 }
+     
+
     include('header.php'); 
 
 ?>
@@ -60,19 +74,21 @@ if ($_POST) {
                 <form action="" method="POST" enctype="multipart/form-data">
                     <div class="form-group">
 
-                        <label for="name" name="name"> Name</label>                        
+                        <label for="name" name="name"> Name</label><p style="color:red;display:inline;"><?php echo empty($nameError) ? '' : '*'.$nameError ?></p>                        
                         <input type="hidden" class="form-control" name="id" value="<?php echo $result['id'] ?>" >
                         <input type="name" class="form-control" name="name" value="<?php echo $result['name'] ?>">
                     </div>
 
                     <div class="form-group">
-                        <label for="email" name="email"> Email</label>
+                        <label for="email" name="email"> Email</label><p style="color:red;display:inline;"><?php echo empty($emailError) ? '' : '*'.$emailError ?></p>
                         <input type="email" class="form-control" name="email" value="<?php echo $result['email'] ?>">
                     </div>
 
                     <div class="form-group">
-                        <label for="password" name="password"> Password </label>
-                        <input type="password" class="form-control" name="password" value="<?php echo $result['password'] ?>">
+                        <label for="password" name="password"> Password </label><p style="color:red;display:inline;"><?php echo empty($passwordError) ? '' : '*'.$passwordError ?></p>
+                        <br>
+                        <span>The user already has a password</span>
+                        <input type="password" class="form-control" name="password">
                     </div>
 
                     <div class="form-group">
