@@ -123,7 +123,7 @@ if ($cm_result) {
                                 <div class="card-comment">
                                     <div class="comment-text" style="margin-left:0px !important;">
                                         <span class="username">
-                                            <?php echo $au_result[$key][0]['name']; ?>
+                                            <?php echo escape($au_result[$key][0]['name']); ?>
                                             <span class="text-muted float-right"><?php echo escape($value['created_id']); ?></span>
                                         </span><!-- /.username -->
                                         <?php echo escape($value['content']); ?>

@@ -1,3 +1,10 @@
+<?php
+
+// require '../Config/config.php';
+// require '../Config/common.php';
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -37,6 +44,7 @@
 
       <!-- SEARCH FORM -->
       <form class="form-inline ml-3" method="POST" action="<?php	echo $page == 'index.php' ? 'index.php' : 'userlist.php';	?>" > 
+      <input name="_token" type="hidden" value="<?php echo $_SESSION['_token']; ?>">
         <div class="input-group input-group-sm">
           <input name="search" class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
           <div class="input-group-append">

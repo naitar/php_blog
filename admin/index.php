@@ -13,7 +13,8 @@ if(isset($_SESSION['role'])){
   }
 }
 
-include('header.php');
+require('header.php');
+// include('header.php');
 
 if (!empty($_GET['pageno'])) {
 
