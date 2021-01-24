@@ -78,21 +78,21 @@ $result = $stmt->fetch(PDO::FETCH_ASSOC);
             <!-- /.card-header -->
             <div class="card-body">
                 <form action="" method="POST" enctype="multipart/form-data">
-                <input name="_token" type="hidden" value="<?php echo $_SESSION['_token']; ?>">
+                <input name="_token" type="hidden" value="<?php echo escape($_SESSION['_token']); ?>">
                     <div class="form-group">
-                        <input type="text" class="form-control" name="id" value="<?php echo $result['id'] ?>" hidden>
+                        <input type="text" class="form-control" name="id" value="<?php echo escape($result['id']); ?>" hidden>
                         <label for="title" name="title"> Title</label><p style="color:red;display:inline;"><?php echo empty($titleError) ? '' : '*'.$titleError ?></p>
-                        <input type="text" class="form-control" name="title" value="<?php echo $result['title'] ?>" >
+                        <input type="text" class="form-control" name="title" value="<?php echo escape($result['title']); ?>" >
                     </div>
 
                     <div class="form-group">
                         <label for="content" name="content"> Content</label><p style="color:red;display:inline;"><?php echo empty($contentError) ? '' : '*'.$contentError ?></p><br>
-                        <textarea class="form-control" name="content" id="" cols="80" rows="8" require><?php echo $result['content'] ?> </textarea>
+                        <textarea class="form-control" name="content" id="" cols="80" rows="8" require><?php echo escape($result['content']); ?> </textarea>
                     </div>
 
                     <div class="form-group">
                         <label for="image" name="image"> Image</label><br>
-                        <img src="images/<?php echo $result['image']; ?>" alt=""><br>
+                        <img src="images/<?php echo escape($result['image']); ?>" alt=""><br>
                         <input type="file" name="image" >
                     </div>
 

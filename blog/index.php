@@ -99,12 +99,12 @@ if (empty($_POST['search'])) {
                             <div class="card card-widget">
                                 <div class="card-header">
                                     <div style="text-align: center;float:none;">
-                                        <h4><?php echo  $value['title']; ?></h4>
+                                        <h4><?php echo  escape($value['title']); ?></h4>
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <a href="blogdetail.php?id=<?php echo $value['id'] ?>">
-                                        <img class="img-fluid pad" src="../admin/images/<?php echo $value['image']; ?>" alt="Blog Photo" style="height: 200px !important;">
+                                    <a href="blogdetail.php?id=<?php echo escape($value['id']); ?>">
+                                        <img class="img-fluid pad" src="../admin/images/<?php echo escape($value['image']); ?>" alt="Blog Photo" style="height: 200px !important;">
                                     </a>
 
                                 </div>

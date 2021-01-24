@@ -64,7 +64,7 @@ if($_POST){
             <!-- /.card-header -->
             <div class="card-body">
                 <form action="add.php" method="POST" enctype="multipart/form-data">
-                <input name="_token" type="hidden" value="<?php echo $_SESSION['_token']; ?>">
+                <input name="_token" type="hidden" value="<?php echo escape($_SESSION['_token']); ?>">
                     <div class="form-group">
                         <label for="title" name="title"> Title</label><p style="color:red;display:inline;"><?php echo empty($titleError) ? '' : '*'.$titleError ?></p>
                         <input type="text" class="form-control" name="title" >

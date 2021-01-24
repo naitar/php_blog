@@ -82,12 +82,12 @@ if (empty($_POST['search'])) {
             ?>
                 <tr>
                   <td><?php echo $i; ?></td>
-                  <td><?php echo $value['title']; ?></td>
-                  <td style="height: 20px;"><?php echo $value['content']; ?></td>
+                  <td><?php echo escape($value['title']); ?></td>
+                  <td style="height: 20px;"><?php echo escape($value['content']); ?></td>
                   <td>
                     <div class="btn-group">
-                      <div class="container"> <a href="edit.php?id=<?php echo $value['id'];  ?>" class="btn btn-primary">Edit</a> </div>
-                      <div class="container"> <a href="delete.php?id=<?php echo $value['id'];  ?>" onclick="return confirm('Are you sure you want to delete this item')" class="btn btn-danger">Delete</a></div>
+                      <div class="container"> <a href="edit.php?id=<?php echo escape($value['id']);  ?>" class="btn btn-primary">Edit</a> </div>
+                      <div class="container"> <a href="delete.php?id=<?php echo escape($value['id']);  ?>" onclick="return confirm('Are you sure you want to delete this item')" class="btn btn-danger">Delete</a></div>
                     </div>
                   </td>
                 </tr>

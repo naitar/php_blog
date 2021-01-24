@@ -85,15 +85,15 @@ if (empty($_POST['search'])) {
             ?>
                 <tr>
                   <td><?php echo $i; ?></td>
-                  <td><?php echo $value['name']; ?></td>
-                  <td><?php echo $value['email']; ?></td>
-                  <td><?php echo $value['password']; ?></td>
+                  <td><?php echo escape($value['name']); ?></td>
+                  <td><?php echo escape($value['email']); ?></td>
+                  <td><?php echo escape($value['password']); ?></td>
                   <td><?php if($value['role'] == 1 ){ echo "Admin";} else {echo "User"; } ?></td>
 
                   <td>
                     <div class="btn-group">
-                      <div class="container"> <a href="user_edit.php?id=<?php echo $value['id'];  ?>" class="btn btn-primary">Edit</a> </div>
-                      <div class="container"> <a href="user_delete.php?id=<?php echo $value['id'];  ?>" 
+                      <div class="container"> <a href="user_edit.php?id=<?php echo escape($value['id']);  ?>" class="btn btn-primary">Edit</a> </div>
+                      <div class="container"> <a href="user_delete.php?id=<?php echo escape($value['id']);  ?>" 
                       onclick="return confirm('Are you sure you want to delete this item')"
                       class="btn btn-danger">Delete</a></div>
                     </div>

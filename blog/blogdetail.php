@@ -99,14 +99,14 @@ if ($cm_result) {
                     <div class="card card-widget">
                         <div class="card-header">
                             <div style="text-align: center;float:none;">
-                                <h4><?php echo $result['title'] ?></h4>
+                                <h4><?php echo escape($result['title']); ?></h4>
                             </div>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <img src="../admin/images/<?php echo $result['image']; ?>" alt="Blog Photo">
+                            <img src="../admin/images/<?php echo escape($result['image']); ?>" alt="Blog Photo">
 
-                            <p><?php echo $result['content'] ?></p>
+                            <p><?php echo escape($result['content']); ?></p>
 
                         </div>
                         <!-- /.card-body -->
@@ -124,9 +124,9 @@ if ($cm_result) {
                                     <div class="comment-text" style="margin-left:0px !important;">
                                         <span class="username">
                                             <?php echo $au_result[$key][0]['name']; ?>
-                                            <span class="text-muted float-right"><?php echo $value['created_id']; ?></span>
+                                            <span class="text-muted float-right"><?php echo escape($value['created_id']); ?></span>
                                         </span><!-- /.username -->
-                                        <?php echo $value['content']; ?>
+                                        <?php echo escape($value['content']); ?>
                                     </div>
                                     <!-- /.comment-text -->
                                 </div>
@@ -141,7 +141,7 @@ if ($cm_result) {
                         <!-- /.card-footer -->
                         <div class="card-footer">
                             <form action="" method="post">
-                            <input name="_token" type="hidden" value="<?php echo $_SESSION['_token']; ?>">
+                            <input name="_token" type="hidden" value="<?php echo escape($_SESSION['_token']); ?>">
                                 <!-- <img class="img-fluid img-circle img-sm" src="../dist/img/user4-128x128.jpg" alt="Alt Text"> -->
                                 <div class="img-push">
                                     <p style="color:red;display:inline;"><?php echo empty($cmtError) ? '' : '*'.$cmtError ?></p>

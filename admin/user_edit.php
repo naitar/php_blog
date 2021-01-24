@@ -73,17 +73,17 @@ if($_POST) {
             <!-- /.card-header -->
             <div class="card-body">
                 <form action="" method="POST" enctype="multipart/form-data">
-                <input name="_token" type="hidden" value="<?php echo $_SESSION['_token']; ?>">
+                <input name="_token" type="hidden" value="<?php echo escape($_SESSION['_token']); ?>">
                     <div class="form-group">
 
                         <label for="name" name="name"> Name</label><p style="color:red;display:inline;"><?php echo empty($nameError) ? '' : '*'.$nameError ?></p>                        
-                        <input type="hidden" class="form-control" name="id" value="<?php echo $result['id'] ?>" >
-                        <input type="name" class="form-control" name="name" value="<?php echo $result['name'] ?>">
+                        <input type="hidden" class="form-control" name="id" value="<?php echo escape($result['id']); ?>" >
+                        <input type="name" class="form-control" name="name" value="<?php echo escape($result['name']); ?>">
                     </div>
 
                     <div class="form-group">
                         <label for="email" name="email"> Email</label><p style="color:red;display:inline;"><?php echo empty($emailError) ? '' : '*'.$emailError ?></p>
-                        <input type="email" class="form-control" name="email" value="<?php echo $result['email'] ?>">
+                        <input type="email" class="form-control" name="email" value="<?php echo escape($result['email']); ?>">
                     </div>
 
                     <div class="form-group">
@@ -95,7 +95,7 @@ if($_POST) {
 
                     <div class="form-group">
                         <label for="admin" name="password"> Admin &nbsp;&nbsp; </label>
-                        <input type="checkbox" name="role" <?php if( $result['role'] == 1){ echo "checked"; } ?> >                       
+                        <input type="checkbox" name="role" <?php if( $result['role'] == 1){ echo escape("checked"); } ?> >                       
                     </div>
                   
                     <div class="form-goup">

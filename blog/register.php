@@ -82,7 +82,7 @@ if ($_POST) {
         <p class="login-box-msg">Register New Account</p>
 
         <form action="" method="post">
-        <input name="_token" type="hidden" value="<?php echo $_SESSION['_token']; ?>">
+        <input name="_token" type="hidden" value="<?php echo escape($_SESSION['_token']); ?>">
           <p style="color:red;"><?php echo empty($nameError) ? '' : '*' . $nameError ?></p>
           <div class="input-group mb-3">
             <input type="name" class="form-control" placeholder="Name" name=name>
